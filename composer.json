@@ -1,0 +1,17 @@
+{
+    "name": "runner/honored-frank-management",
+    "require-dev": {
+        "firebase/php-jwt": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Runner\\HonoredFrankManagement\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "John"
+        }
+    ],
+    "require": {}
+}
