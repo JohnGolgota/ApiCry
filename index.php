@@ -5,15 +5,26 @@ header("Access-Control-Allow-Origin: *");
 // header("Access-Control-Opener-Policy: same-origin");
 // header("Access-Control-Embedder-Policy: require-corp");
 $debug = [];
+//$debug["headers"] = getallheaders();
+//$debug["a2"] = $debug["headers"]["authorization2"];
+//$debug["A2"] = $debug["headers"]["Authorization2"];
+//$debug["glbals"] = $GLOBALS;
+//$debug["env"] = $_ENV;
+//$debug["neko"] = "mimi";
+
+
+// return;
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
-require_once "src/contratos.php";
+require_once "src/api_final.php";
 $authorization = new validated();
-$validated          = $authorization->valid();
+$validated = $authorization->valid();
+//$debug["valid"] = $validated;
 if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 200) {
 	$err["Unauthorized"] = "Bad getway";
-  http_response_code($validated["code"]??501);
+	http_response_code($validated["code"] ?? 501);
 	echo json_encode($err, JSON_UNESCAPED_UNICODE);
+	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
 	return;
 }
 $_SESSION["auth_token"] = true;
@@ -22,24 +33,24 @@ switch ($method) {
 	case 'GET':
 		try {
 			$limit_int = intval($_GET['limit'] ?? 10);
-			$page_int  = intval($_GET['page'] ?? 1);
-			$contratos = new ter_t($limit_int, $page_int);
+			$page_int = intval($_GET['page'] ?? 1);
+			$api_REST = new api_final($limit_int, $page_int);
 			if (isset($_GET['id'])) {
-				$id     = $_GET['id'];
-				$result = $contratos->get_by_id($id);
+				$id = $_GET['id'];
+				$result = $api_REST->get_by_id($id);
 				if ($result) {
 					http_response_code(200);
 					echo json_encode($result, JSON_UNESCAPED_UNICODE);
 					return;
 				} else {
 					http_response_code(404);
-					echo json_encode(array('message' => 'No se encontró el contratos.'), JSON_UNESCAPED_UNICODE);
+					echo json_encode(array('message' => 'No se encontró el dato.'), JSON_UNESCAPED_UNICODE);
 					return;
 				}
 				return;
 			} else {
 				// consulta general
-				$result = $contratos->get_all();
+				$result = $api_REST->get_all();
 				$result += $debug;
 				if ($result) {
 					http_response_code(200);
@@ -47,7 +58,7 @@ switch ($method) {
 					return;
 				} else {
 					http_response_code(404);
-					echo json_encode(array('message' => 'No se encontraron contratos`s.'), JSON_UNESCAPED_UNICODE);
+					echo json_encode(array('message' => 'No se encontraron.'), JSON_UNESCAPED_UNICODE);
 					return;
 				}
 				return;
@@ -57,7 +68,7 @@ switch ($method) {
 
 		} catch (\Throwable $th) {
 
-      
+
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
 			return;
 		}
@@ -66,22 +77,22 @@ switch ($method) {
 	case 'POST':
 		try {
 			$json_data = file_get_contents("php://input");
-      if(!$json_data){
-        echo json_encode(["Error" => "No se enviaron datos"], JSON_UNESCAPED_UNICODE);
-        break;
-      }
+			if (!$json_data) {
+				echo json_encode(["Error" => "No se enviaron datos"], JSON_UNESCAPED_UNICODE);
+				break;
+			}
 
 			$data = json_decode($json_data, true);
 
-			$contratos = new ter_t();
-			$id        = $contratos->insert($data);
+			$api_REST = new api_final();
+			$id = $api_REST->insert($data);
 
 			if ($id) {
 				http_response_code(201);
-				echo json_encode(array('message' => 'contratos registrado correctamente.', 'id_contratos' => $id), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Registrado correctamente.', 'id' => $id), JSON_UNESCAPED_UNICODE);
 			} else {
 				http_response_code(500);
-				echo json_encode(array('message' => 'Error al insertar el contratos.'), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Error al insertar.'), JSON_UNESCAPED_UNICODE);
 			}
 		} catch (\Throwable $th) {
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
@@ -92,11 +103,11 @@ switch ($method) {
 		$json_data = file_get_contents("php://input");
 		$data = json_decode($json_data, true);
 		try {
-			$contratos = new ter_t();
-			$result    = $contratos->update($data);
+			$api_REST = new api_final();
+			$result = $api_REST->update($data);
 			if ($result) {
 				http_response_code(200);
-				echo json_encode(array('message' => 'contratos actualizado correctamente.', 'response' => $result), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Actualizado correctamente.', 'response' => $result), JSON_UNESCAPED_UNICODE);
 				return;
 			} else {
 				http_response_code(500);
@@ -115,8 +126,8 @@ switch ($method) {
 			if (isset($_GET['id'])) {
 				$id = $_GET['id'];
 
-				$contratos = new ter_t();
-				$result    = $contratos->delete($id);
+				$api_REST = new api_final();
+				$result = $api_REST->delete($id);
 
 				if ($result) {
 					http_response_code(200);
@@ -124,7 +135,7 @@ switch ($method) {
 					return;
 				} else {
 					http_response_code(500);
-					echo json_encode(array('message' => 'Error al eliminar el contratos.'), JSON_UNESCAPED_UNICODE);
+					echo json_encode(array('message' => 'Error al eliminar.'), JSON_UNESCAPED_UNICODE);
 					return;
 				}
 			} else {

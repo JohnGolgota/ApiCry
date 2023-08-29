@@ -22,7 +22,7 @@ class model_helper extends Database {
 	/**
 	 * @version 1.0.0
 	 */
-	function __construct($limit = 10, $offset = 1) {
+	protected function __construct($limit = 10, $offset = 1) {
 		try {
 			parent::__construct($this->dbname ?? DB_NAME);
 			$this->are_param_valid($limit, $offset);
@@ -61,10 +61,10 @@ class model_helper extends Database {
 			// Ejecutar la consulta
 			$stmt->execute();
 
-			$resultados["data"]  = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$resultados["rows"]  = $this->all_rows_db;
+			$resultados["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$resultados["rows"] = $this->all_rows_db;
 			$resultados["error"] = $this->err;
-			$res                 = $resultados;
+			$res = $resultados;
 			// $debug["get_all"]["results"] = $resultados;
 
 			// $res += $debug;
@@ -110,7 +110,7 @@ class model_helper extends Database {
 			// $res["debug"] = $debug;
 			return $res;
 		} catch (\Throwable $th) {
-			$this->err[]  = array("message" => $th->getMessage(), "private" => $th);
+			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
 			$res["Error"] = $th->getMessage();
 			return $res;
 		}
@@ -163,14 +163,14 @@ class model_helper extends Database {
 			 * @var array $set_values columnas que coinciden con la base de datos
 			 */
 			$set_columns = array();
-			$set_values  = array();
+			$set_values = array();
 			foreach ($data as $key => $value) {
 				// $iterator++;
 				if (isset($arr[$key])) {
 					// $iner_iterator++;
 					// $binds_params[] = array('iteration' => $key,'column name' => $arr[$key],'data value for column' => $data[$arr[$key]],"value" => $value);
 					$set_columns[] = $arr[$key];
-					$set_values[]  = ":" . $arr[$key];
+					$set_values[] = ":" . $arr[$key];
 				} else {
 					// $binds_params[] = array('iteration' => $key,'message' => "No se encontró índice correspondiente en \$arr");
 				}
@@ -179,7 +179,7 @@ class model_helper extends Database {
 			 * @var string $atrs lista de atributos de la base de datos separados por comas
 			 * @var string $values valores nombrados como sus respectivos atributos separados por comas con un ':' adelante
 			 */
-			$atrs   = implode(",", $set_columns);
+			$atrs = implode(",", $set_columns);
 			$values = implode(",", $set_values);
 
 			// $debug["iterated string"]["iterations"]["total"]        = $iterator;
@@ -220,7 +220,7 @@ class model_helper extends Database {
 			// $res["debug"] = $debug;
 			return $res;
 		} catch (\Throwable $th) {
-			$this->err[]  = array("message" => $th->getMessage(), "private" => $th);
+			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
 			$res["Error"] = $th->getMessage();
 			// $debug["Errors"] = $this->err;
 			// $res["debug"]    = $debug;
@@ -326,7 +326,7 @@ class model_helper extends Database {
 
 			$stmt->execute();
 
-			$affected_rows           = $stmt->rowCount();
+			$affected_rows = $stmt->rowCount();
 			$res["affected"]["rows"] = $affected_rows;
 			// $debug["res"]["affected rows"] = $affected_rows;
 
@@ -344,12 +344,11 @@ class model_helper extends Database {
 			// $debug["Errors"] = $this->err;
 			// $res["debug"]= $debug;
 			$res["debug ob"] = $this->debug_all;
-			$res["Error"]    = $this->err;
+			$res["Error"] = $this->err;
 			return $res;
 		}
 		// $res["debug"] = $debug;
-		$res["debug ob"] = $this->debug_all;
-		return $res;
+		// $res["debug ob"] = $this->debug_all;
 	}
 	/**
 	 * @version 1.0.0
@@ -376,7 +375,8 @@ class model_helper extends Database {
 				return $res;
 			}
 			// $res["debug"]         = $debug;
-			return $res["fail"] = "fail";
+			$res["fail"] = "fail";
+			return $res;
 		} catch (PDOException $error) {
 			$this->err[] = array("message" => $error->getMessage(), "private" => $error);
 
@@ -506,7 +506,7 @@ class model_helper extends Database {
 	private function validate_data($data, string $opt = "INSERT"): void {
 
 		// $this->debug_all["req"]             = $this->required;
-		$this->debug_all["data recived"]    = $data;
+		$this->debug_all["data recived"] = $data;
 		$this->debug_all["option selected"] = $opt;
 		if (!is_array($data)) {
 			throw new Exception("El dato recibido debe ser un objeto   ");

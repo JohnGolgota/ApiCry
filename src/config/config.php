@@ -4,23 +4,9 @@
 // 	echo json_encode(array("error" => "Authentication token is required"));
 // 	return;
 // }
-// Configuración de la base de datos
-// define('DB_HOST', 'localhost');
-// define('DB_USERNAME', 'root');
-// define('DB_PASSWORD', '');
-// define('DB_NAME', 'pqrs');
-// $env = file_get_contents(".env");
-// var_dump($env);
-// echo "<br>";
-
-function env_def($args) {
+function def_env_consts_ifs($args) {
 	$lines_args = explode("\n", $args);
-	// var_dump($lines_args);
 	foreach ($lines_args as $key => $value) {
-		// echo "<br>key<br>";
-		// var_dump($key);
-		// echo "<br>value<br>";
-		// var_dump($value);
 		$def_arg = explode("=", $value);
 		$_ENV += array($def_arg[0] => trim($def_arg[1]));
 		if ($def_arg[0] == "API_KEY") {
@@ -38,16 +24,48 @@ function env_def($args) {
 		}
 	}
 }
-function const_from_env(){
-  define("API_KEY", $_ENV["API_KEY"]);
-  define("DB_HOST", $_ENV["DB_HOST"]);
-  define("DB_USERNAME", $_ENV["DB_USERNAME"]);
-  define("DB_PASSWORD", $_ENV["DB_PASSWORD"]);
-  define("ALGORITHM", $_ENV["ALGORITHM"]);
-  // define("DB_NAME", $_ENV["DB_NAME"]);
+function const_from_env() {
+	if ($_ENV["API_KEY"] == null || $_ENV["DB_HOST"] == null || $_ENV["DB_USERNAME"] == null || $_ENV["DB_PASSWORD"] == null || $_ENV["DB_NAME"] == null) {
+		return;
+	} else {
+		define("API_KEY", $_ENV["API_KEY"]);
+		define("DB_HOST", $_ENV["DB_HOST"]);
+		define("DB_USERNAME", $_ENV["DB_USERNAME"]);
+		define("DB_PASSWORD", $_ENV["DB_PASSWORD"]);
+		define("ALGORITHM", $_ENV["ALGORITHM"]);
+		define("DB_NAME", $_ENV["DB_NAME"]);
+	}
 }
-const_from_env();
-// env_def(file_get_contents(__DIR__ . "/.env"));
-// var_dump(API_KEY);
-// var_dump(NOSE_COMO);
-?>
+function const_from_text() {
+	define("API_KEY", "MamaHuevoDigoGluGluGlu");
+	define("DB_HOST", "localhost");
+	define("DB_PASSWORD", '');
+	define("DB_USERNAME", "postgres");
+	define("DB_NAME", "postgres");
+	define("API_DB_TABLE", "tbl_example");
+	define("VALIDATE_DB", "postgres");
+	define("VALIDATE_DB_TABLE", "tbl_app_client");
+	define("ALGORITHM", "HS256");
+}
+function def_env_consts($args) {
+	$lines_args = explode("\n", $args);
+	foreach ($lines_args as $key => $value) {
+		$def_arg = explode("=", $value);
+		$_ENV[$def_arg[0]] = trim($def_arg[1]);
+		define($def_arg[0], trim($def_arg[1]));
+	}
+}
+// const_from_env();
+// const_from_text();
+// def_env_consts_ifs(file_get_contents($_ENV["env_file"]));
+def_env_consts(file_get_contents($_ENV["env_file"]));
+try {
+	require_once $_ENV["const_path"];
+} catch (\Throwable $th) {
+	// const COLS_VALID_TABLE = [
+	// ];
+	// const COLS_API_TABLE = [
+	// ];
+	// const COLS_API_TABLE_OBJ = [
+	// ];
+}
