@@ -1,0 +1,8 @@
+Options +FollowSymLinks
+Options -MultiViews
+Options All -Indexes
+RewriteEngine On
+
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Authorization"

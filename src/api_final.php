@@ -29,18 +29,11 @@ class suggests extends model_helper {
 		// TODO
 	private function suggest() {
 		$OBJETO = [
-			"dbname" => "portadai_web3",
-			"main_table_db" => "terminacion_contrato",
+			"dbname" => "db",
+			"main_table_db" => "tabla",
 			"columns" => [
 				"id",
 				"nombre",
-				"apellido",
-				"cedula",
-				"fecha_nacimiento",
-				"fecha_contrato",
-				"fecha_terminacion",
-				"motivo",
-				"observaciones",
 				"created_at",
 				"updated_at",
 				"deleted_at",
@@ -48,13 +41,6 @@ class suggests extends model_helper {
 			"columns_obj" => [
 				"id" => "id",
 				"nombre" => "nombre",
-				"apellido" => "apellido",
-				"cedula" => "cedula",
-				"fecha_nacimiento" => "fecha_nacimiento",
-				"fecha_contrato" => "fecha_contrato",
-				"fecha_terminacion" => "fecha_terminacion",
-				"motivo" => "motivo",
-				"observaciones" => "observaciones",
 				"created_at" => "created_at",
 				"updated_at" => "updated_at",
 				"deleted_at" => "deleted_at",
@@ -62,7 +48,6 @@ class suggests extends model_helper {
 		];
 		$e = new endpoint(OBJETO);
 		$res = $e->get_all();
-		var_dump($res);
-		return;
+		return $res;
 	}
 }

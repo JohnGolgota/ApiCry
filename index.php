@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
+// header("Access-Control-Allow-Origin: *");
 // header("Access-Control-Allow-Origin: http://localhost:5173");
 // header("Access-Control-Opener-Policy: same-origin");
 // header("Access-Control-Embedder-Policy: require-corp");
@@ -12,8 +12,6 @@ $debug = [];
 //$debug["env"] = $_ENV;
 //$debug["neko"] = "mimi";
 
-
-// return;
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
 require_once "src/api_final.php";
@@ -27,24 +25,31 @@ if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 2
 	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
 	return;
 }
-$_SESSION["auth_token"] = true;
+// $_SESSION["auth_token"] = true;
 $method = $_SERVER['REQUEST_METHOD'];
+http_response_code(200);
 switch ($method) {
 	case 'GET':
 		try {
 			$limit_int = intval($_GET['limit'] ?? 10);
 			$page_int = intval($_GET['page'] ?? 1);
+
 			$api_REST = new api_final($limit_int, $page_int);
+
 			if (isset($_GET['id'])) {
 				$id = $_GET['id'];
+
 				$result = $api_REST->get_by_id($id);
+
 				if ($result) {
 					http_response_code(200);
 					echo json_encode($result, JSON_UNESCAPED_UNICODE);
+
 					return;
 				} else {
 					http_response_code(404);
 					echo json_encode(array('message' => 'No se encontró el dato.'), JSON_UNESCAPED_UNICODE);
+
 					return;
 				}
 				return;
@@ -52,31 +57,34 @@ switch ($method) {
 				// consulta general
 				$result = $api_REST->get_all();
 				$result += $debug;
+
 				if ($result) {
 					http_response_code(200);
 					echo json_encode($result, JSON_UNESCAPED_UNICODE);
+				
 					return;
 				} else {
 					http_response_code(404);
 					echo json_encode(array('message' => 'No se encontraron.'), JSON_UNESCAPED_UNICODE);
+				
 					return;
 				}
 				return;
-
 			}
 			return;
 
 		} catch (\Throwable $th) {
-
-
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
+			
 			return;
 		}
 		break;
 
 	case 'POST':
 		try {
+			// TODO esto no tiene returns xd
 			$json_data = file_get_contents("php://input");
+			
 			if (!$json_data) {
 				echo json_encode(["Error" => "No se enviaron datos"], JSON_UNESCAPED_UNICODE);
 				break;
@@ -123,6 +131,7 @@ switch ($method) {
 
 	case 'DELETE':
 		try {
+			// FIX mal implementacion de metodos. No combinar DELETE con GET... basicamente 
 			if (isset($_GET['id'])) {
 				$id = $_GET['id'];
 

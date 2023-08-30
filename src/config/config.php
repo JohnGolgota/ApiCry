@@ -32,8 +32,11 @@ function const_from_env() {
 		define("DB_HOST", $_ENV["DB_HOST"]);
 		define("DB_USERNAME", $_ENV["DB_USERNAME"]);
 		define("DB_PASSWORD", $_ENV["DB_PASSWORD"]);
-		define("ALGORITHM", $_ENV["ALGORITHM"]);
 		define("DB_NAME", $_ENV["DB_NAME"]);
+		define("API_DB_TABLE", $_ENV["API_DB_TABLE"]);
+		define("VALIDATE_DB", $_ENV["VALIDATE_DB"]);
+		define("VALIDATE_DB_TABLE", $_ENV["VALIDATE_DB_TABLE"]);
+		define("ALGORITHM", $_ENV["ALGORITHM"]);
 	}
 }
 function const_from_text() {
