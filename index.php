@@ -12,6 +12,12 @@ $debug = [];
 //$debug["env"] = $_ENV;
 //$debug["neko"] = "mimi";
 
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method === "OPTIONS") {
+	http_response_code(200);
+	return;
+}
+
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
 require_once "src/api_final.php";
@@ -25,9 +31,7 @@ if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 2
 	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
 	return;
 }
-// $_SESSION["auth_token"] = true;
-$method = $_SERVER['REQUEST_METHOD'];
-http_response_code(200);
+
 switch ($method) {
 	case 'GET':
 		try {
@@ -61,12 +65,12 @@ switch ($method) {
 				if ($result) {
 					http_response_code(200);
 					echo json_encode($result, JSON_UNESCAPED_UNICODE);
-				
+
 					return;
 				} else {
 					http_response_code(404);
 					echo json_encode(array('message' => 'No se encontraron.'), JSON_UNESCAPED_UNICODE);
-				
+
 					return;
 				}
 				return;
@@ -75,7 +79,7 @@ switch ($method) {
 
 		} catch (\Throwable $th) {
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
-			
+
 			return;
 		}
 		break;
@@ -84,7 +88,7 @@ switch ($method) {
 		try {
 			// TODO esto no tiene returns xd
 			$json_data = file_get_contents("php://input");
-			
+
 			if (!$json_data) {
 				echo json_encode(["Error" => "No se enviaron datos"], JSON_UNESCAPED_UNICODE);
 				break;
@@ -131,7 +135,7 @@ switch ($method) {
 
 	case 'DELETE':
 		try {
-			// FIX mal implementacion de metodos. No combinar DELETE con GET... basicamente 
+			// FIX mal implementacion de metodos. No combinar DELETE con GET... basicamente
 			if (isset($_GET['id'])) {
 				$id = $_GET['id'];
 
@@ -156,6 +160,9 @@ switch ($method) {
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
 			return;
 		}
+		break;
+	case 'OPTIONS':
+		http_response_code(200);
 		break;
 
 	default:
