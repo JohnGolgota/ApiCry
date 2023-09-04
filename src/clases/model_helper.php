@@ -64,11 +64,11 @@ class model_helper extends Database {
 
 			$resultados["data"] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			$resultados["rows"] = $this->all_rows_db;
-			$resultados["error"] = $this->err;
+			// $debug["error"] = $this->err;
 			$res = $resultados;
 			// $debug["get_all"]["results"] = $resultados;
 
-			// $res += $debug;
+			// $res["debug"] = $debug;
 			return $res;
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
@@ -82,11 +82,12 @@ class model_helper extends Database {
 	 * @version 1.0.0
 	 */
 	public function get_by_id($id) {
-		$res = array("id" => $id);
+		$res = [];
+		// $res["search_id"] = $id;
 		// TODO validar id recibida.
 		// $debug = array("id" => $id);
 		if (!$this->err === false) {
-			$res = array("Error" => $this->err);
+			$res += array("Error" => $this->err);
 			// $res["debug"] = $debug;
 			return $res;
 		}
@@ -104,15 +105,18 @@ class model_helper extends Database {
 
 			if ($registro) {
 				$res["data"] = $registro;
+				$res["code"] = 200;
 				// $res["debug"] = $debug;
 				return $res;
 			}
-			$res["Fallo"] = "No se a encontrado";
+			$res["message"] = "No se a encontrado";
+			$res["code"] = 404;
 			// $res["debug"] = $debug;
 			return $res;
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
-			$res["Error"] = $th->getMessage();
+			$res["message"] = $th->getMessage();
+			$res["code"] = 500;
 			return $res;
 		}
 	}

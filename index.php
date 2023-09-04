@@ -46,22 +46,21 @@ switch ($method) {
 
 				$result = $api_REST->get_by_id($id);
 
-				if ($result) {
-					http_response_code(200);
-					echo json_encode($result, JSON_UNESCAPED_UNICODE);
+				if (isset($result["data"])) {
+					http_response_code($result["code"] ?? 200);
+					echo json_encode($result["data"], JSON_UNESCAPED_UNICODE);
 
 					return;
 				} else {
-					http_response_code(404);
-					echo json_encode(array('message' => 'No se encontró el dato.'), JSON_UNESCAPED_UNICODE);
-
+					http_response_code($result["code"] ?? 500);
+					echo json_encode(array('message' => 'Algo salio mal. ' . $result['message']), JSON_UNESCAPED_UNICODE);
 					return;
 				}
 				return;
 			} else {
 				// consulta general
 				$result = $api_REST->get_all();
-				$result += $debug;
+				// $result["debug"] = $debug;
 
 				if ($result) {
 					http_response_code(200);
@@ -69,8 +68,8 @@ switch ($method) {
 
 					return;
 				} else {
-					http_response_code(404);
-					echo json_encode(array('message' => 'No se encontraron.'), JSON_UNESCAPED_UNICODE);
+					http_response_code(500);
+					echo json_encode(array('message' => 'Algo salio mal.'), JSON_UNESCAPED_UNICODE);
 
 					return;
 				}
