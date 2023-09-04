@@ -23,7 +23,7 @@ class model_helper extends Database {
 	/**
 	 * @version 1.0.0
 	 */
-	protected function __construct($limit = 10, $offset = 1) {
+	public function __construct($limit = 10, $offset = 1) {
 		try {
 			parent::__construct($this->dbname ?? DB_NAME);
 			$this->are_param_valid($limit, $offset);
