@@ -13,7 +13,7 @@ class Database {
 	protected $conn;
 	private $error;
 
-	protected function __construct($dbname = DB_NAME) {
+	public function __construct($dbname = DB_NAME) {
 		$this->host = DB_HOST;
 		$this->username = DB_USERNAME;
 		$this->password = DB_PASSWORD;

@@ -17,7 +17,8 @@ if ($method === "OPTIONS") {
 	http_response_code(200);
 	return;
 }
-
+$_ENV["const_path"] = "const.php";
+$_ENV["env_file"] = ".env";
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
 require_once "src/api_final.php";
