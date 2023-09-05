@@ -48,6 +48,7 @@ class model_helper extends Database {
 			return $res;
 		}
 		try {
+			// TODO order by?
 			// Control de exepciones
 			$query = "SELECT * FROM $this->main_table_db LIMIT ? OFFSET ?";
 			// $debug["get_all"]["query"] = $query;
@@ -337,6 +338,8 @@ class model_helper extends Database {
 
 			$res["affected"]["id"] = $data[$this->columns[0]];
 
+			$res["updated_info"] = $this->get_by_id($data[$this->columns[0]]);
+
 			// $current_data_db               = $this->get_by_id($data[$this->columns[0]]);
 			// $debug["res"]["updated info"] = $current_data_db;
 
@@ -376,11 +379,11 @@ class model_helper extends Database {
 
 			$res["affected_rows"] = $filas_afectadas;
 			if ($filas_afectadas === 1) {
-				$res["success"] = true;
+				$res["code"] = 200;
 				return $res;
 			}
 			// $res["debug"]         = $debug;
-			$res["fail"] = "fail";
+			$res["code"] = 404;
 			return $res;
 		} catch (PDOException $error) {
 			$this->err[] = array("message" => $error->getMessage(), "private" => $error);
@@ -389,6 +392,7 @@ class model_helper extends Database {
 			// $res["debug"]    = $debug;
 
 			$res["Error"] = $error->getMessage();
+			$res["code"] = 500;
 			return $res;
 		}
 	}

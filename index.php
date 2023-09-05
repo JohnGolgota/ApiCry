@@ -48,7 +48,7 @@ switch ($method) {
 
 				if (isset($result["data"])) {
 					http_response_code($result["code"] ?? 200);
-					echo json_encode($result["data"], JSON_UNESCAPED_UNICODE);
+					echo json_encode(["data" => $result["data"]], JSON_UNESCAPED_UNICODE);
 
 					return;
 				} else {
@@ -101,7 +101,7 @@ switch ($method) {
 
 			if ($id) {
 				http_response_code(201);
-				echo json_encode(array('message' => 'Registrado correctamente.', 'id' => $id), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Registrado correctamente.', 'new_id' => $id["id"]), JSON_UNESCAPED_UNICODE);
 			} else {
 				http_response_code(500);
 				echo json_encode(array('message' => 'Error al insertar.'), JSON_UNESCAPED_UNICODE);
@@ -119,7 +119,7 @@ switch ($method) {
 			$result = $api_REST->update($data);
 			if ($result) {
 				http_response_code(200);
-				echo json_encode(array('message' => 'Actualizado correctamente.', 'response' => $result), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Actualizado correctamente.', 'updated_info' => $result["updated_info"]["data"]), JSON_UNESCAPED_UNICODE);
 				return;
 			} else {
 				http_response_code(500);
@@ -136,14 +136,25 @@ switch ($method) {
 	case 'DELETE':
 		try {
 			// FIX mal implementacion de metodos. No combinar DELETE con GET... basicamente
-			if (isset($_GET['id'])) {
-				$id = $_GET['id'];
+			$json_data = file_get_contents("php://input");
+			// $debug["json_data"] = $json_data;
+			$data = json_decode($json_data, true);
+			// $debug["data"] = $data;
+			if (isset($data["id"])) {
 
+				$id = $data["id"];
+				// $debug["id type"] = gettype($id);
+				if (!is_int($id)) {
+					// echo json_encode(["Error" => $debug], JSON_UNESCAPED_UNICODE);
+					echo json_encode(array('message' => 'El parámetro "id" es requerido para la eliminación.'), JSON_UNESCAPED_UNICODE);
+					return;
+				}
 				$api_REST = new api_final();
 				$result = $api_REST->delete($id);
+				// $result = $debug;
 
 				if ($result) {
-					http_response_code(200);
+					http_response_code($result["code"]);
 					echo json_encode($result, JSON_UNESCAPED_UNICODE);
 					return;
 				} else {
@@ -153,10 +164,12 @@ switch ($method) {
 				}
 			} else {
 				http_response_code(400);
+				// echo json_encode(["Error" => $debug], JSON_UNESCAPED_UNICODE);
 				echo json_encode(array('message' => 'El parámetro "id" es requerido para la eliminación.'), JSON_UNESCAPED_UNICODE);
 				return;
 			}
 		} catch (\Throwable $th) {
+			http_response_code(500);
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);
 			return;
 		}
@@ -166,7 +179,7 @@ switch ($method) {
 		break;
 
 	default:
-		http_response_code(405);
+		http_response_code(405); // Method Not Allowed
 		echo json_encode(array('message' => 'Método no permitido.'), JSON_UNESCAPED_UNICODE);
 		break;
 }

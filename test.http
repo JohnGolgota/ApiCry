@@ -1,0 +1,47 @@
+@token =
+
+### all
+GET http://localhost/ApiCry/
+?limit=1
+# &page=2
+Content-Type: application/json
+Authorization: {{token}}
+
+### one
+GET http://localhost/ApiCry/
+?id=43
+
+### create
+POST http://localhost/ApiCry/
+Content-Type: application/json
+
+{
+	"nombres_apellidos": "test"
+}
+
+### update
+PUT http://localhost/ApiCry/
+Content-Type: application/json
+
+{
+  "id_terminacion_contrato": 43,
+  "fecha_registro": "No se",
+  "nombres_apellidos": "test",
+  "identificacion": "12345",
+  "email": "a@a.a",
+  "link_carta": "a",
+  "estado": "si",
+  "medios_envio": null,
+  "fecha_ini": null,
+  "fecha_final": null,
+  "fecha_aplazado": null,
+  "observaciones": ""
+}
+
+### delete
+DELETE http://localhost/ApiCry/
+Content-Type: application/json
+
+{
+  "id": 43
+}
