@@ -99,12 +99,12 @@ switch ($method) {
 			$api_REST = new api_final();
 			$id = $api_REST->insert($data);
 
-			if ($id) {
+			if ($id["code"] === 201) {
 				http_response_code(201);
-				echo json_encode(array('message' => 'Registrado correctamente.', 'new_id' => $id["id"]), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('new_id' => $id["id"]), JSON_UNESCAPED_UNICODE);
 			} else {
 				http_response_code(500);
-				echo json_encode(array('message' => 'Error al insertar.'), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Error al insertar.', "debug" => $id), JSON_UNESCAPED_UNICODE);
 			}
 		} catch (\Throwable $th) {
 			echo json_encode(array('message' => $th->getMessage()), JSON_UNESCAPED_UNICODE);

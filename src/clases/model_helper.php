@@ -220,13 +220,16 @@ class model_helper extends Database {
 
 			if ($stmt->execute()) {
 				$res["id"] = $this->conn->lastInsertId();
+				$res["code"] = 201;
 				// $res["debug"] = $debug;
 				return $res;
 			}
 			// $res["debug"] = $debug;
+			$res["code"] = 400;
 			return $res;
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
+			$res["code"] = 500;
 			$res["Error"] = $th->getMessage();
 			// $debug["Errors"] = $this->err;
 			// $res["debug"]    = $debug;
