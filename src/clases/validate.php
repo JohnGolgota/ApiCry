@@ -139,7 +139,7 @@ class validated extends Database {
 			$db = $this->get_valid_user();
 			// $debug["db"] = $db;
 
-			if (!$db) {
+			if (!$db || empty($db) || !isset($db[$this->cols["password"]])) {
 				$res["code"] = 401;
 				$res["msg"] = "Usuario incorrecto";
 				// $res["debug"] = $debug;

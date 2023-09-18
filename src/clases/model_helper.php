@@ -50,7 +50,7 @@ class model_helper extends Database {
 		try {
 			// TODO order by?
 			// Control de exepciones
-			$query = "SELECT * FROM $this->main_table_db LIMIT ? OFFSET ?";
+			$query = "SELECT * FROM $this->main_table_db ORDER BY " . $this->columns[0] . " DESC LIMIT ? OFFSET ?";
 			// $debug["get_all"]["query"] = $query;
 
 			// Preparar la consulta

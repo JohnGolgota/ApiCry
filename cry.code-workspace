@@ -57,5 +57,7 @@
 			"editor.defaultFormatter": "vscode.json-language-features",
 			"editor.formatOnSave": true,
 		},
+		"workbench.colorTheme": "Ayu Dark Bordered",
+		"workbench.iconTheme": "ayu",
 	}
 }
