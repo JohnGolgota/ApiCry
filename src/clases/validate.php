@@ -170,7 +170,7 @@ class validated extends Database {
 			// $debug["err"] = $th;
 			$res["Error"] = $th->getMessage();
 			$res["code"] = 401;
-			$res["debug"] = $debug;
+			$res["debug"] = $debug ?? "";
 			return $res;
 		}
 	}

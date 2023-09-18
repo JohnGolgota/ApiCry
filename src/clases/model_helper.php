@@ -313,8 +313,8 @@ class model_helper extends Database {
 			 * @var int $iterator debug
 			 * @var int $iterator_if_statement debug
 			 */
-			// $binding               = array();
-			// $iterator              = 0;
+			// $binding = array();
+			// $iterator = 0;
 			// $iterator_if_statement = 0;
 			foreach ($data as $key => $value) {
 				// $iterator++;
@@ -329,9 +329,9 @@ class model_helper extends Database {
 					// $binding["ignorados"][] = ":" . $key . "," . $value;
 				}
 			}
-			// $debug["binding"]["iterators"]["total"]        = $iterator;
+			// $debug["binding"]["iterators"]["total"] = $iterator;
 			// $debug["binding"]["iterators"]["if statement"] = $iterator_if_statement;
-			// $debug["binding"]["data"]                      = $binding;
+			// $debug["binding"]["data"] = $binding;
 
 			$stmt->execute();
 
@@ -353,7 +353,7 @@ class model_helper extends Database {
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
 			// $debug["Errors"] = $this->err;
-			// $res["debug"]= $debug;
+			// $res["debug"] = $debug;
 			$res["debug ob"] = $this->debug_all;
 			$res["Error"] = $this->err;
 			return $res;
