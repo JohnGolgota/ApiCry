@@ -88,7 +88,6 @@ switch ($method) {
 		try {
 			// TODO esto no tiene returns xd
 			$json_data = file_get_contents("php://input");
-
 			if (!$json_data) {
 				echo json_encode(["Error" => "No se enviaron datos"], JSON_UNESCAPED_UNICODE);
 				break;
@@ -119,7 +118,7 @@ switch ($method) {
 			$result = $api_REST->update($data);
 			if ($result) {
 				http_response_code(200);
-				echo json_encode(array('message' => 'Actualizado correctamente.', 'updated_info' => $result["updated_info"]["data"]), JSON_UNESCAPED_UNICODE);
+				echo json_encode(array('message' => 'Actualizado correctamente.', 'updated_info' => $result["updated_info"]["data"] ?? $result), JSON_UNESCAPED_UNICODE);
 				return;
 			} else {
 				http_response_code(500);
