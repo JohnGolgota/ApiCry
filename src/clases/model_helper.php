@@ -29,7 +29,7 @@ class model_helper extends Database {
 			$this->are_param_valid($limit, $offset);
 			$this->are_db_params_valid();
 		} catch (\Throwable $th) {
-			$this->err[] = array("message" => "Se detuvo el proceso", "private" => $th);
+			$this->err[] = array("message" => "Se detuvo el proceso", "private" => $th->getMessage());
 			return;
 		}
 		return;
