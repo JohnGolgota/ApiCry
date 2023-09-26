@@ -22,16 +22,16 @@ $_ENV["env_file"] = ".env";
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
 require_once "src/api_final.php";
-$authorization = new validated();
-$validated = $authorization->valid();
-//$debug["valid"] = $validated;
-if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 200) {
-	$err["Unauthorized"] = "Bad getway";
-	http_response_code($validated["code"] ?? 501);
-	echo json_encode($err, JSON_UNESCAPED_UNICODE);
-	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
-	return;
-}
+// $authorization = new validated();
+// $validated = $authorization->valid();
+// //$debug["valid"] = $validated;
+// if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 200) {
+// 	$err["Unauthorized"] = "Bad getway";
+// 	http_response_code($validated["code"] ?? 501);
+// 	echo json_encode($err, JSON_UNESCAPED_UNICODE);
+// 	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
+// 	return;
+// }
 
 switch ($method) {
 	case 'GET':
@@ -57,22 +57,27 @@ switch ($method) {
 					return;
 				}
 				return;
+			}
+			if (isset($_GET['search'])) {
+				http_response_code(200);
+				$result = $api_REST->get_by_match($_GET['search']);
+				echo json_encode($result, JSON_UNESCAPED_UNICODE);
+				return;
+			}
+
+			// consulta general
+			$result = $api_REST->get_all();
+			// $result["debug"] = $debug;
+
+			if ($result) {
+				http_response_code(200);
+				echo json_encode($result, JSON_UNESCAPED_UNICODE);
+
+				return;
 			} else {
-				// consulta general
-				$result = $api_REST->get_all();
-				// $result["debug"] = $debug;
+				http_response_code(500);
+				echo json_encode(array('message' => 'Algo salio mal.'), JSON_UNESCAPED_UNICODE);
 
-				if ($result) {
-					http_response_code(200);
-					echo json_encode($result, JSON_UNESCAPED_UNICODE);
-
-					return;
-				} else {
-					http_response_code(500);
-					echo json_encode(array('message' => 'Algo salio mal.'), JSON_UNESCAPED_UNICODE);
-
-					return;
-				}
 				return;
 			}
 			return;

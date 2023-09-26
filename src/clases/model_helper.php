@@ -21,13 +21,13 @@ class model_helper extends Database {
 	protected $columns_required;
 	protected $required;
 	/**
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
 	public function __construct($limit = 10, $offset = 1) {
 		try {
 			parent::__construct($this->dbname ?? DB_NAME);
-			$this->are_param_valid($limit, $offset);
 			$this->are_db_params_valid();
+			$this->are_param_valid($limit, $offset);
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => "Se detuvo el proceso", "private" => $th->getMessage());
 			return;
@@ -118,6 +118,51 @@ class model_helper extends Database {
 			$this->err[] = array("message" => $th->getMessage(), "private" => $th);
 			$res["message"] = $th->getMessage();
 			$res["code"] = 500;
+			return $res;
+		}
+	}
+	/**
+	 * @version 1.0.0
+	 */
+	public function get_by_match($valor_filtro = 1): array {
+		$res = [];
+		$debug = array();
+		$debug["params"] = array("valor filtro" => $valor_filtro);
+		if (!$this->err === false) {
+			$res["error"] = $this->err;
+			$res += $debug;
+			return $res;
+		}
+		try {
+			$coincidencias = array();
+			foreach ($this->columns as $field) {
+				// $coincidencias[] = $field . " LIKE :" . $field;
+				$coincidencias[] = $field . " LIKE :valor_filtro";
+			}
+			$debug["coincidencias"] = $coincidencias;
+			$where = implode(" OR ", $coincidencias);
+			$debug["where"] = $where;
+
+			$query = "SELECT * FROM $this->main_table_db WHERE $where ORDER BY " . $this->columns[0] . " DESC LIMIT $this->limit OFFSET $this->offset";
+			$debug["consulta"] = $query;
+
+			$stmt = $this->conn->prepare($query);
+			// $stmt->bindParam(":valor_filtro", $valor_filtro);
+			$stmt->bindValue(":valor_filtro", "%" . $valor_filtro . "%");
+			$stmt->execute();
+
+			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$res["data"] = $resultados;
+
+			$res["rows"] = $this->all_rows_db;
+
+			$res["code"] = 200;
+			$res["debug"] = $debug;
+			return $res;
+		} catch (\Throwable $th) {
+			$res["message"] = $th->getMessage();
+			$res["code"] = 500;
+			$res["debug"] = $debug;
 			return $res;
 		}
 	}
@@ -432,7 +477,7 @@ class model_helper extends Database {
 	}
 	/**
 	 * Lanza ecepciones en caso de que los parametros no sean validos
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @todo Dale mas vueltas a esto
 	 */
 	private function are_param_valid($limit, $offset): void {
@@ -477,7 +522,7 @@ class model_helper extends Database {
 				throw new Exception("No existe esta pagina");
 			}
 		} catch (\Throwable $th) {
-			$this->err[] = array("message" => "Pagina no encontrada," . $th->getMessage(), "private" => $th);
+			$this->err[] = array("message" => "Pagina no encontrada, " . $th->getMessage(), "private" => $th);
 			// $debug["errors"]["this"] = $this->err;
 			// $this->debug_all         = $debug;
 			return;
