@@ -21,13 +21,14 @@ class model_helper extends Database {
 	protected $columns_required;
 	protected $required;
 	/**
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
 	public function __construct($limit = 10, $offset = 1) {
 		try {
 			parent::__construct($this->dbname ?? DB_NAME);
 			$this->are_db_params_valid();
 			$this->are_param_valid($limit, $offset);
+			$this->procces_params($limit, $offset);
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => "Se detuvo el proceso", "private" => $th->getMessage());
 			return;
@@ -122,7 +123,7 @@ class model_helper extends Database {
 		}
 	}
 	/**
-	 * @version 1.0.0
+	 * @version 0.1.0
 	 */
 	public function get_by_match($valor_filtro = 1): array {
 		$res = [];
@@ -445,19 +446,29 @@ class model_helper extends Database {
 		}
 	}
 	/**
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 * @return array Retorna un objeto con el numero de filas que hay en la tabla principal de la base de datos
 	 */
-	private function get_total_rows(): array {
+	private function get_total_rows(string $query = null, array $param_query = null): array {
 		// $debug = array();
 		$res = array();
 
 		try {
-			$query = "SELECT COUNT(*) as total_rows FROM $this->main_table_db";
+			$query = $query ?? "SELECT COUNT(*) as total_rows FROM $this->main_table_db";
 			// $debug["get_total_rows"]["query"] = $query;
 
-			$stmt = $this->conn->prepare($query);
-			$stmt->execute();
+			if ($param_query) {
+				// $debug["get_total_rows"]["param_query"] = $param_query;
+				$stmt = $this->conn->prepare($query);
+				foreach ($param_query as $key => $value) {
+					$stmt->bindValue(":" . $key, $value);
+				}
+				// $stmt->bindParam(":param_query", $param_query);
+				$stmt->execute();
+			} else {
+				$stmt = $this->conn->prepare($query);
+				$stmt->execute();
+			}
 
 			$res = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -474,6 +485,15 @@ class model_helper extends Database {
 			// $res["debug"] = $debug;
 			return $res;
 		}
+	}
+	/**
+	 * @version 0.1.0
+	 */
+	private function update_total_rows(): array {
+		$res = array();
+
+
+		return $res;
 	}
 	/**
 	 * Lanza ecepciones en caso de que los parametros no sean validos
@@ -503,6 +523,15 @@ class model_helper extends Database {
 			$limit = 10;
 			throw new Exception("Limite no puede ser cero o menor de cero");
 		}
+		return;
+	}
+	/**
+	 * @todo hacerlo Xd
+	 * @version 1.0.1
+	 */
+	private function procces_params($limit, $offset): void {
+		$debug = array();
+		$debug["params"] = array("init" => array("limit" => $limit, "offset" => $offset));
 		try {
 			$total = $this->get_total_rows();
 			// $debug["params"]["total"] = $total;
