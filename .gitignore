@@ -4,3 +4,6 @@
 *copy*
 vendor
 src/config/consts.php
+.htaccess
+private*
+!public*

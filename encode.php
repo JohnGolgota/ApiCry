@@ -9,7 +9,10 @@ $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 // $debug["data"] = $data;
 // $debug["data type"] = gettype($data);
-
+if (isset($exit) && $exit == true) {
+	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
+	return;
+}
 $authorization = new validated();
 // $authorization->test();
 // TODO usar post

@@ -1,63 +1,63 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"editor.minimap.enabled": false,
-		"editor.useTabStops": true,
-		"editor.tabSize": 4,
-		"editor.indentSize": "tabSize",
-		"editor.insertSpaces": true,
-		"editor.detectIndentation": false,
-		"html.format.wrapLineLength": 0,
-		"html.format.wrapAttributes": "auto",
-		"editor.formatOnSave": false,
-		"files.autoSave": "afterDelay",
-		"workbench.editor.wrapTabs": true,
-		"editor.codeActionsOnSave": {
-			"source.fixAll.markdownlint": true
-		},
-		"php.debug.executablePath": null,
-		"php.validate.executablePath": null,
-		"php-intellisense.trace.server": "off",
-		"php.inlayHints.types.suppressVariableFromLiteral": false,
-		"php.format.rules.alignConsecutiveAssignments": false,
-		"php.format.rules.callParametersNewLineBeforeRightParen": false,
-		"php.format.rules.callParametersWrap": "off",
-		"php.completion.parameters": "none",
-		"php.completion.showNamespaceLabel": false,
-		"php.hover.parameters": false,
-		"php.problems.scope": "none",
-		"phpunit.enableAutomaticRefresh": false,
-		"php.completion.autoimport-docblock": "none",
-		"php.completion.autoimport": "none",
-		"php.format.codeStyle": "K&R",
-		"[php]": {
-			"editor.codeActionsOnSave": {
-				"source.fixAll": false,
-			},
-			"editor.defaultFormatter": "DEVSENSE.phptools-vscode",
-			"editor.formatOnSave": true,
-		},
-		"[javascript]": {
-			"editor.defaultFormatter": "vscode.typescript-language-features",
-			"editor.formatOnSave": true,
-		},
-		"[css]": {
-			"editor.defaultFormatter": "vscode.css-language-features",
-			"editor.formatOnSave": true,
-		},
-		"[jsonc]": {
-			"editor.defaultFormatter": "vscode.json-language-features",
-			"editor.formatOnSave": true,
-		},
-		"[json]": {
-			"editor.defaultFormatter": "vscode.json-language-features",
-			"editor.formatOnSave": true,
-		},
-		"workbench.colorTheme": "Ayu Dark Bordered",
-		"workbench.iconTheme": "ayu",
-	}
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.minimap.enabled": false,
+        "editor.useTabStops": true,
+        "editor.tabSize": 4,
+        "editor.indentSize": "tabSize",
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "html.format.wrapLineLength": 0,
+        "html.format.wrapAttributes": "auto",
+        "editor.formatOnSave": false,
+        "files.autoSave": "afterDelay",
+        "workbench.editor.wrapTabs": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.markdownlint": true
+        },
+        "php.debug.executablePath": null,
+        "php.validate.executablePath": null,
+        "php-intellisense.trace.server": "off",
+        "php.inlayHints.types.suppressVariableFromLiteral": false,
+        "php.format.rules.alignConsecutiveAssignments": false,
+        "php.format.rules.callParametersNewLineBeforeRightParen": false,
+        "php.format.rules.callParametersWrap": "off",
+        "php.completion.parameters": "none",
+        "php.completion.showNamespaceLabel": false,
+        "php.hover.parameters": false,
+        "php.problems.scope": "none",
+        "phpunit.enableAutomaticRefresh": false,
+        "php.completion.autoimport-docblock": "none",
+        "php.completion.autoimport": "none",
+        "php.format.codeStyle": "K&R",
+        "[php]": {
+            "editor.codeActionsOnSave": {
+                "source.fixAll": false,
+            },
+            "editor.defaultFormatter": "DEVSENSE.phptools-vscode",
+            "editor.formatOnSave": true,
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "vscode.typescript-language-features",
+            "editor.formatOnSave": true,
+        },
+        "[css]": {
+            "editor.defaultFormatter": "vscode.css-language-features",
+            "editor.formatOnSave": true,
+        },
+        "[jsonc]": {
+            "editor.defaultFormatter": "vscode.json-language-features",
+            "editor.formatOnSave": true,
+        },
+        "[json]": {
+            "editor.defaultFormatter": "vscode.json-language-features",
+            "editor.formatOnSave": true,
+        },
+        "workbench.colorTheme": "Ayu Light Bordered",
+        "workbench.iconTheme": "ayu",
+    }
 }

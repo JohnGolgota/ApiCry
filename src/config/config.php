@@ -39,16 +39,18 @@ function const_from_env() {
 		define("ALGORITHM", $_ENV["ALGORITHM"]);
 	}
 }
-function const_from_text() {
-	define("API_KEY", "MamaHuevoDigoGluGluGlu");
-	define("DB_HOST", "localhost");
-	define("DB_PASSWORD", '');
-	define("DB_USERNAME", "postgres");
-	define("DB_NAME", "postgres");
-	define("API_DB_TABLE", "tbl_example");
-	define("VALIDATE_DB", "postgres");
-	define("VALIDATE_DB_TABLE", "tbl_app_client");
-	define("ALGORITHM", "HS256");
+function const_from_text($arg = null) {
+	if ($arg == null) {
+		define("API_KEY", "MamaHuevoDigoGluGluGlu");
+		define("DB_HOST", "localhost");
+		define("DB_PASSWORD", '');
+		define("DB_USERNAME", "postgres");
+		define("DB_NAME", "postgres");
+		define("API_DB_TABLE", "tbl_example");
+		define("VALIDATE_DB", "postgres");
+		define("VALIDATE_DB_TABLE", "tbl_app_client");
+		define("ALGORITHM", "HS256");
+	}
 }
 function def_env_consts($args) {
 	$lines_args = explode("\n", $args);
@@ -58,12 +60,27 @@ function def_env_consts($args) {
 		define($def_arg[0], trim($def_arg[1]));
 	}
 }
+function get_const_from_apache_env($arg = null) {
+	define('VALIDATE_DB_TABLE', getenv('VALIDATE_DB_TABLE'));
+	define('VALIDATE_DB', getenv('VALIDATE_DB'));
+	define('DB_HOST', getenv('DB_HOST'));
+	define('DB_USERNAME', getenv('DB_USERNAME'));
+	define('DB_PASSWORD', getenv('DB_PASSWORD'));
+}
 // const_from_env();
 // const_from_text();
 // def_env_consts_ifs(file_get_contents($_ENV["env_file"]));
-def_env_consts(file_get_contents($_ENV["env_file"]));
 try {
-	require_once $_ENV["const_path"];
+	if (isset($_ENV["env_file"]) && isset($_ENV["const_path"])) {
+		def_env_consts(file_get_contents($_ENV["env_file"]));
+		require_once $_ENV["const_path"];
+		return;
+	} elseif (getenv("ENV_Q")) {
+		get_const_from_apache_env();
+		require_once getenv("CONSTS_PATH");
+		return;
+	}
+	$exit = true;
 } catch (\Throwable $th) {
 	// const COLS_VALID_TABLE = [
 	// ];
