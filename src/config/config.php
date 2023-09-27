@@ -75,7 +75,7 @@ try {
 		def_env_consts(file_get_contents($_ENV["env_file"]));
 		require_once $_ENV["const_path"];
 		return;
-	} elseif (getenv("ENV_Q")) {
+	} elseif (getenv("CONSTS_PATH") != "") {
 		get_const_from_apache_env();
 		require_once getenv("CONSTS_PATH");
 		return;
