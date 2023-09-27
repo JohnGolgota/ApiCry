@@ -21,14 +21,12 @@ class model_helper extends Database {
 	protected $columns_required;
 	protected $required;
 	/**
-	 * @version 1.0.2
+	 * @version 1.0.3
 	 */
-	public function __construct($limit = 10, $offset = 1) {
+	public function __construct() {
 		try {
 			parent::__construct($this->dbname ?? DB_NAME);
 			$this->are_db_params_valid();
-			$this->are_param_valid($limit, $offset);
-			$this->procces_params($limit, $offset);
 		} catch (\Throwable $th) {
 			$this->err[] = array("message" => "Se detuvo el proceso", "private" => $th->getMessage());
 			return;
@@ -36,9 +34,9 @@ class model_helper extends Database {
 		return;
 	}
 	/**
-	 * @version 1.0.0
+	 * @version 1.0.1
 	 */
-	public function get_all(): array {
+	public function get_all($limit = 10, $offset = 1): array {
 		$res = array();
 		// $debug         = array();
 		// $debug["this"] = $this->debug_all;
@@ -49,6 +47,8 @@ class model_helper extends Database {
 			return $res;
 		}
 		try {
+			$this->are_param_valid($limit, $offset);
+			$this->procces_params($limit, $offset);
 			// TODO order by?
 			// Control de exepciones
 			$query = "SELECT * FROM $this->main_table_db ORDER BY " . $this->columns[0] . " DESC LIMIT ? OFFSET ?";
@@ -123,29 +123,33 @@ class model_helper extends Database {
 		}
 	}
 	/**
-	 * @version 0.1.0
+	 * @version 0.1.2
 	 */
-	public function get_by_match($valor_filtro = 1): array {
+	public function get_by_match($valor_filtro = null, $limit = 10, $offset = 1): array {
 		$res = [];
-		$debug = array();
-		$debug["params"] = array("valor filtro" => $valor_filtro);
+		// $debug = array();
+		// $debug["params"] = array("valor filtro" => $valor_filtro);
 		if (!$this->err === false) {
 			$res["error"] = $this->err;
-			$res += $debug;
+			// $res += $debug;
 			return $res;
 		}
 		try {
+			$this->are_param_valid($limit, $offset);
 			$coincidencias = array();
 			foreach ($this->columns as $field) {
 				// $coincidencias[] = $field . " LIKE :" . $field;
 				$coincidencias[] = $field . " LIKE :valor_filtro";
 			}
-			$debug["coincidencias"] = $coincidencias;
+			// $debug["coincidencias"] = $coincidencias;
 			$where = implode(" OR ", $coincidencias);
-			$debug["where"] = $where;
+			// $debug["where"] = $where;
+
+			$query_for_total_rows = "SELECT COUNT(*) as total_rows FROM $this->main_table_db WHERE $where";
+			$this->procces_params($limit, $offset, ["valor_filtro" => $valor_filtro, "query" => $query_for_total_rows]);
 
 			$query = "SELECT * FROM $this->main_table_db WHERE $where ORDER BY " . $this->columns[0] . " DESC LIMIT $this->limit OFFSET $this->offset";
-			$debug["consulta"] = $query;
+			// $debug["consulta"] = $query;
 
 			$stmt = $this->conn->prepare($query);
 			// $stmt->bindParam(":valor_filtro", $valor_filtro);
@@ -153,17 +157,19 @@ class model_helper extends Database {
 			$stmt->execute();
 
 			$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$res["data"] = $resultados;
-
-			$res["rows"] = $this->all_rows_db;
-
+			$res["res"] = ["data" => $resultados, "rows" => $this->all_rows_db];
+			if (isset($this->all_rows_db["total_rows"]) && $this->all_rows_db["total_rows"] === 0) {
+				$res["code"] = 404;
+				// $res["debug"] = $debug;
+				return $res;
+			}
 			$res["code"] = 200;
-			$res["debug"] = $debug;
+			// $res["debug"] = $debug;
 			return $res;
 		} catch (\Throwable $th) {
 			$res["message"] = $th->getMessage();
 			$res["code"] = 500;
-			$res["debug"] = $debug;
+			// $res["debug"] = $debug;
 			return $res;
 		}
 	}
@@ -446,10 +452,10 @@ class model_helper extends Database {
 		}
 	}
 	/**
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 * @return array Retorna un objeto con el numero de filas que hay en la tabla principal de la base de datos
 	 */
-	private function get_total_rows(string $query = null, array $param_query = null): array {
+	private function get_total_rows(string $query = null, string $param_query = null): array {
 		// $debug = array();
 		$res = array();
 
@@ -460,9 +466,7 @@ class model_helper extends Database {
 			if ($param_query) {
 				// $debug["get_total_rows"]["param_query"] = $param_query;
 				$stmt = $this->conn->prepare($query);
-				foreach ($param_query as $key => $value) {
-					$stmt->bindValue(":" . $key, $value);
-				}
+				$stmt->bindValue(":valor_filtro", "%" . $param_query . "%");
 				// $stmt->bindParam(":param_query", $param_query);
 				$stmt->execute();
 			} else {
@@ -477,7 +481,7 @@ class model_helper extends Database {
 
 			return $res;
 		} catch (\Throwable $th) {
-			$this->err[] = array("message" => "No se encontraron registros", "private" => $th);
+			$this->err[] = array("message" => "No se encontraron registros " . $th->getMessage(), "private" => $th);
 			// $debug["get_total_rows"]["errors"] = $th;
 			// $debug["get_total_rows"]["errors"] = $this->err;
 
@@ -527,13 +531,13 @@ class model_helper extends Database {
 	}
 	/**
 	 * @todo hacerlo Xd
-	 * @version 1.0.1
+	 * @version 1.0.2
 	 */
-	private function procces_params($limit, $offset): void {
-		$debug = array();
-		$debug["params"] = array("init" => array("limit" => $limit, "offset" => $offset));
+	private function procces_params($limit, $offset, array $get_rows_params = []): void {
+		// $debug = array();
+		// $debug["params"] = array("init" => array("limit" => $limit, "offset" => $offset));
 		try {
-			$total = $this->get_total_rows();
+			$total = $this->get_total_rows($get_rows_params["query"] ?? null, $get_rows_params["valor_filtro"] ?? null);
 			// $debug["params"]["total"] = $total;
 
 			$this->all_rows_db["total_rows"] = $total["total_rows"];

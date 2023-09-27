@@ -39,9 +39,10 @@ switch ($method) {
 			$limit_int = intval($_GET['limit'] ?? 10);
 			$page_int = intval($_GET['page'] ?? 1);
 
-			$api_REST = new api_final($limit_int, $page_int);
+			$api_REST = new api_final();
 
-			if (isset($_GET['id'])) {
+
+			if (isset($_GET['id']) && !empty($_GET['id'])) {
 				$id = $_GET['id'];
 
 				$result = $api_REST->get_by_id($id);
@@ -56,17 +57,20 @@ switch ($method) {
 					echo json_encode(array('message' => 'Algo salio mal. ' . $result['message']), JSON_UNESCAPED_UNICODE);
 					return;
 				}
-				return;
 			}
-			if (isset($_GET['search'])) {
-				http_response_code(200);
+			if (isset($_GET['search']) && !empty($_GET['search'])) {
 				$result = $api_REST->get_by_match($_GET['search']);
-				echo json_encode($result, JSON_UNESCAPED_UNICODE);
+				http_response_code($result["code"] ?? 500);
+				if (isset($result["debug"])) {
+					echo json_encode($result, JSON_UNESCAPED_UNICODE);
+					return;
+				}
+				echo json_encode($result["res"], JSON_UNESCAPED_UNICODE);
 				return;
 			}
 
 			// consulta general
-			$result = $api_REST->get_all();
+			$result = $api_REST->get_all($limit_int, $page_int);
 			// $result["debug"] = $debug;
 
 			if ($result) {
