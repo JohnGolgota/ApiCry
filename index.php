@@ -22,16 +22,16 @@ $_ENV["env_file"] = ".env";
 require_once "vendor/autoload.php";
 require_once "src/clases/validate.php";
 require_once "src/api_final.php";
-// $authorization = new validated();
-// $validated = $authorization->valid();
-// //$debug["valid"] = $validated;
-// if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 200) {
-// 	$err["Unauthorized"] = "Bad getway";
-// 	http_response_code($validated["code"] ?? 501);
-// 	echo json_encode($err, JSON_UNESCAPED_UNICODE);
-// 	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
-// 	return;
-// }
+$authorization = new validated();
+$validated = $authorization->valid();
+//$debug["valid"] = $validated;
+if (!isset($validated) || !isset($validated["code"]) || $validated["code"] !== 200) {
+	$err["Unauthorized"] = "Bad getway";
+	http_response_code($validated["code"] ?? 501);
+	echo json_encode($err, JSON_UNESCAPED_UNICODE);
+	//	echo json_encode($debug, JSON_UNESCAPED_UNICODE);
+	return;
+}
 
 switch ($method) {
 	case 'GET':
