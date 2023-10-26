@@ -9,10 +9,14 @@ Header always set Access-Control-Allow-Headers "Content-Type, Authorization, Con
 
 ErrorDocument 404 /error.php
 
-SetEnv ENV_Q
-SetEnv VALIDATE_DB_TABLE
-SetEnv CONSTS_PATH
-SetEnv VALIDATE_DB
-SetEnv DB_HOST
-SetEnv DB_USERNAME
-SetEnv DB_PASSWORD
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+SetEnv
+
+SetEnv
