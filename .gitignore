@@ -7,3 +7,4 @@ src/config/consts.php
 .htaccess
 private*
 !public*
+*.zip
