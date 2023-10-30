@@ -208,7 +208,12 @@ class validated extends Database {
 		// $debug["client_name"] = $data["name"];
 		// $debug["client_pass"] = $data["password"];
 		try {
-			//code...
+			if (!isset($data)) {
+				$res["code"] = 401;
+				$res["msg"] = "missing data";
+				// $res["debug"] = $debug;
+				return $res;
+			}
 			if ($data["name"] == null || $data["password"] == null) {
 				$res["code"] = 401;
 				$res["msg"] = "missing data";
