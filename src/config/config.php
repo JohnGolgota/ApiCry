@@ -1,9 +1,4 @@
 <?php
-// header("Content-Type: application/json; charset=UTF-8");
-// if (!isset($_SESSION["auth_token"]) || $_SESSION["auth_token"] !== true) {
-// 	echo json_encode(array("error" => "Authentication token is required"));
-// 	return;
-// }
 function def_env_consts_ifs($args) {
 	$lines_args = explode("\n", $args);
 	foreach ($lines_args as $key => $value) {
@@ -37,19 +32,6 @@ function const_from_env() {
 		define("VALIDATE_DB", $_ENV["VALIDATE_DB"]);
 		define("VALIDATE_DB_TABLE", $_ENV["VALIDATE_DB_TABLE"]);
 		define("ALGORITHM", $_ENV["ALGORITHM"]);
-	}
-}
-function const_from_text($arg = null) {
-	if ($arg == null) {
-		define("API_KEY", "MamaHuevoDigoGluGluGlu");
-		define("DB_HOST", "localhost");
-		define("DB_PASSWORD", '');
-		define("DB_USERNAME", "postgres");
-		define("DB_NAME", "postgres");
-		define("API_DB_TABLE", "tbl_example");
-		define("VALIDATE_DB", "postgres");
-		define("VALIDATE_DB_TABLE", "tbl_app_client");
-		define("ALGORITHM", "HS256");
 	}
 }
 function def_env_consts($args) {
@@ -86,6 +68,7 @@ try {
 	}
 	$exit = true;
 } catch (\Throwable $th) {
+	echo json_encode(array("error" => $th->getMessage()));
 	// const COLS_VALID_TABLE = [
 	// ];
 	// const COLS_API_TABLE = [

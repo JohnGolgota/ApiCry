@@ -1,9 +1,4 @@
 <?php
-// header("Content-Type: application/json; charset=UTF-8");
-// if (!isset($_SESSION["auth_token"]) || $_SESSION["auth_token"] !== true) {
-// 	echo json_encode(array("error" => "Authentication token is required"));
-// 	return;
-// }
 // require_once __DIR__ . '/../../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -129,27 +124,27 @@ class validated extends Database {
 
 	}
 	public function newToken($req_body): array {
-		// $debug = [];
+		$debug = [];
 		$res["code"] = 200;
 
-		// $debug["req_body"] = $req_body;
+		$debug["req_body"] = $req_body;
 
 		try {
 			$this->are_req_body_valid($req_body);
 			$db = $this->get_valid_user();
-			// $debug["db"] = $db;
+			$debug["db"] = $db;
 
 			if (!$db || empty($db) || !isset($db[$this->cols["password"]])) {
 				$res["code"] = 401;
 				$res["msg"] = "Usuario incorrecto";
-				// $res["debug"] = $debug;
+				$res["debug"] = $debug;
 				return $res;
 			}
 			if (!password_verify($req_body["password"], $db[$this->cols["password"]])) {
 				$debug["password_verify"] = password_verify($req_body["password"], $db[$this->cols["password"]]);
 				$res["code"] = 401;
 				$res["msg"] = "Password incorrecto";
-				// $res["debug"] = $debug;
+				$res["debug"] = $debug;
 				return $res;
 			}
 			$debug["password_verify"] = password_verify($req_body["password"], $db[$this->cols["password"]]);
@@ -163,11 +158,11 @@ class validated extends Database {
 			$jwt = JWT::encode($payload, API_KEY, ALGORITHM);
 			$debug["jwt"] = $jwt;
 
-			// $res["debug"] = $debug;
+			$res["debug"] = $debug;
 			$res["token"] = $jwt;
 			return $res;
 		} catch (\Throwable $th) {
-			// $debug["err"] = $th;
+			$debug["err"] = $th;
 			$res["Error"] = $th->getMessage();
 			$res["code"] = 401;
 			$res["debug"] = $debug ?? "";
